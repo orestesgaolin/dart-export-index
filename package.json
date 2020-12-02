@@ -2,7 +2,7 @@
   "name": "dart-export-index",
   "displayName": "dart-export-index",
   "description": "Create 'index.dart' file that exports the files in current directory.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "orestesgaolin",
   "repository": {
     "type": "git",
