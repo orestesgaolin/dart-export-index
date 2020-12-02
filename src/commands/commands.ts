@@ -8,10 +8,15 @@ import {
 import { ApplicationError } from '../utils/errors'
 import {
   createFileIfNotExists,
+  clearFile,
   getLines,
   writeFile,
+  listFiles,
 } from '../utils/file-manager'
 import { getExtension } from '../utils/file-name'
+
+const isDart = /\.dart?$/g;
+const exportFileName = 'index.dart'
 
 const getFilePath = (): string => {
   if (!fileIsOpened()) {
@@ -25,17 +30,31 @@ const getFilePath = (): string => {
   return getCurrentFilePath()
 }
 
+const getCurrentDirectoryDartFiles = (): string[] => {
+  if (!fileIsOpened()) {
+    throw new ApplicationError('No file is opened.')
+  }
+
+  if (!fileIsSaved()) {
+    throw new ApplicationError('The file is not saved yet.')
+  }
+
+  const filePath = getCurrentFilePath()
+  const dirPath = path.dirname(filePath)
+  const files = listFiles(dirPath)
+  const dartFiles = files.filter((f) => f.match(isDart))
+  return dartFiles
+}
+
 const getIndexPath = (filePath: string): string => {
   const dirPath = path.dirname(filePath)
-  const extension = getExtension(filePath).replace('x', '') // jsx -> js
-  return path.join(dirPath, `index.${extension}`)
+  return path.join(dirPath, `${exportFileName}`)
 }
+
 
 const getExportationLine = (filePath: string): string => {
   const fileName = path.basename(filePath)
-  const extension = getExtension(fileName)
-  const fileNameWithoutExtension = fileName.replace(`.${extension}`, '')
-  return `export * from './${fileNameWithoutExtension}';`
+  return `export '${fileName}';`
 }
 
 const writeLineAndSort = (filePath: string, line: string): void => {
@@ -51,12 +70,12 @@ const writeLineAndSort = (filePath: string, line: string): void => {
   writeFile(filePath, written)
 }
 
-export const addCurrentFileExportationToIndex = () => {
+export const addCurrentFileToIndexDart = () => {
   try {
     const filePath = getFilePath()
 
-    if (!filePath.match(/\.[jt]sx?$/)) {
-      throw new ApplicationError('The file is not JavaScipt or TypeScript.')
+    if (!filePath.match(isDart)) {
+      throw new ApplicationError('The file is not Dart file.')
     }
 
     const indexFilePath = getIndexPath(filePath)
@@ -69,6 +88,32 @@ export const addCurrentFileExportationToIndex = () => {
 
     const exportationLine = getExportationLine(filePath)
     writeLineAndSort(indexFilePath, exportationLine)
+  } catch (err) {
+    if (err instanceof ApplicationError) {
+      vscode.window.showErrorMessage(err.message)
+      return
+    }
+
+    throw err
+  }
+}
+
+export const exportDartFilesInCurrentDirectory = () => {
+  try {
+    const files = getCurrentDirectoryDartFiles()
+    const filePath = getFilePath()
+    const indexFilePath = getIndexPath(filePath)
+    createFileIfNotExists(indexFilePath)
+    clearFile(indexFilePath)
+
+    files.forEach((f) => {
+      if (f === exportFileName) {
+        return
+      }
+      const exportationLine = getExportationLine(f)
+      writeLineAndSort(indexFilePath, exportationLine)
+    })
+
   } catch (err) {
     if (err instanceof ApplicationError) {
       vscode.window.showErrorMessage(err.message)

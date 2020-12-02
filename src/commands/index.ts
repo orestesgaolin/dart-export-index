@@ -1,1 +1,1 @@
-export * from './add-current-file-exportation-to-index'
+export * from './commands'

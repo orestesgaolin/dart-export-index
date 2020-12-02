@@ -16,12 +16,22 @@ export const createFile = (filePath: string): void => {
   fs.appendFileSync(filePath, '', 'utf-8')
 }
 
+export const listFiles = (dirPath: string): string[] => {
+  return fs.readdirSync(dirPath)
+}
+
 export const createFileIfNotExists = (filePath: string): void => {
   if (fileExists(filePath)) {
     return
   }
 
   createFile(filePath)
+}
+
+export const clearFile = (filePath: string): void => {
+  if (fileExists(filePath)) {
+    fs.writeFileSync(filePath, '')
+  }
 }
 
 export const getLines = (filePath: string): string[] => {
@@ -32,4 +42,4 @@ export const writeFile = (filePath: string, data: string): void => {
   fs.writeFileSync(filePath, data)
 }
 
-export class FileAlreadyExistsError extends ApplicationError {}
+export class FileAlreadyExistsError extends ApplicationError { }

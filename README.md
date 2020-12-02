@@ -1,22 +1,19 @@
-# create-index
+# dart-export-index
 
 ## Features
 
-![Demo](https://github.com/tsugitta/create-index/blob/master/screenshots/usage.gif)
+![Usage](https://github.com/orestesgaolin/create-index/blob/master/screenshots/usage.png)
 
-by calling the command,
+This extension adds commands:
 
-- create `index.ts` in the same directory with opening file if needed
-- add `export * from ${fileName}` to `index.ts` or `index.js` with sorting lines if needed
+- Export all Dart files in current directory
+    - will create index.dart file exporting all the Dart files in the current directory
+- Export current Dart file to index.dart
+    - will add current file to index.dart in the current directory
 
-## Requirements
 
-- you don't have any complaint about this import / export style
+## Source
 
-## Extension Settings
+Source code available on [GitHub](https://github.com/orestesgaolin/create-index).
 
-Nothing.
-
-## source
-
-https://github.com/tsugitta/create-index
+This is a fork of [create-index](https://github.com/tsugitta/create-index).

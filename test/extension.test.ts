@@ -4,14 +4,14 @@ import * as mkdirp from 'mkdirp'
 import * as path from 'path'
 import * as rimraf from 'rimraf'
 import * as vscode from 'vscode'
-import { addCurrentFileExportationToIndex } from '../src/commands/add-current-file-exportation-to-index'
+import { addCurrentFileToIndexDart } from '../src/commands/commands'
 import * as extension from '../src/extension'
 import { ApplicationError } from '../src/utils'
 
 const testResourcesPath = path.join(__dirname, 'test-resources')
 
 suite('Extension Tests', () => {
-  suite('addCurrentFileExportationToIndex', () => {
+  suite('addCurrentFileToIndexDart', () => {
     setup(() => {
       mkdirp.sync(testResourcesPath)
       fs.writeFileSync(path.join(testResourcesPath, 'foo.ts'), '')
@@ -19,7 +19,7 @@ suite('Extension Tests', () => {
     })
 
     teardown(() => {
-      rimraf(testResourcesPath, () => {})
+      rimraf(testResourcesPath, () => { })
     })
 
     suite('when the file is not opened', () => {
