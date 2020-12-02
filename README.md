@@ -2,7 +2,7 @@
 
 ## Features
 
-![Usage](https://github.com/orestesgaolin/create-index/blob/master/screenshots/usage.png)
+![Usage](./screenshots/usage.png)
 
 This extension adds commands:
 
