@@ -1,12 +1,12 @@
 {
   "name": "dart-export-index",
-  "displayName": "dart-export-index",
-  "description": "Create 'index.dart' file that exports the files in current directory.",
-  "version": "0.1.1",
+  "displayName": "Dart export file generator",
+  "description": "Create index.dart that exports the files in current directory. This allows for importing whole folders in batch instead of importing each file one by one.",
+  "version": "0.1.2",
   "publisher": "orestesgaolin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/orestesgaolin/create-index"
+    "url": "https://github.com/orestesgaolin/dart-export-index"
   },
   "engines": {
     "vscode": "^1.12.0"
