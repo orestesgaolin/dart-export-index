@@ -1,25 +1,10 @@
 # Change Log
 
-## 0.1.5
+## 0.2.0 (2020-12-14)
 
-- Bugfix for the case where the index file does not exist
+- Adding 2 new commands to export Dart files to `dir_name.dart` 🚀
 
-## 0.1.4
+## 0.1.0 - 0.1.3
 
-- Support JS. for js file, the command creates `index.js` instead.
-
-## 0.1.3
-
-- Support also `.tsx`
-
-## 0.1.2
-
-- Support file name including period
-
-## 0.1.1
-
-- Add GitHub link for vscode market
-
-## 0.1.0
-
-- Initial release 🌱
+- Initial release 🌱 (ported from create-index extension)
+- Exporting Dart files to `index.dart`

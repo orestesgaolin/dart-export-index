@@ -2,7 +2,7 @@
   "name": "dart-export-index",
   "displayName": "Dart export file generator",
   "description": "Create index.dart that exports the files in current directory. This allows for importing whole folders in batch instead of importing each file one by one.",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "publisher": "orestesgaolin",
   "icon": "screenshots/icon.png",
   "repository": {
@@ -24,11 +24,19 @@
     "commands": [
       {
         "command": "extension.addCurrentFileToIndexDart",
-        "title": "Export current Dart file to index.dart"
+        "title": "Export (add) current Dart file to index.dart"
+      },
+      {
+        "command": "extension.addCurrentFileToIndexDartDirName",
+        "title": "Export (add) current Dart file to dir_name.dart"
       },
       {
         "command": "extension.exportDartFilesInCurrentDirectory",
-        "title": "Export all Dart files in current directory"
+        "title": "Export Dart files in current directory to index.dart"
+      },
+      {
+        "command": "extension.exportDartFilesInCurrentDirectoryDirName",
+        "title": "Export Dart files in current directory to dir_name.dart"
       }
     ]
   },
