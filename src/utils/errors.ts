@@ -1,9 +1,9 @@
 export class ApplicationError implements Error {
-  public name = 'ApplicationError'
+  public name = 'ApplicationError';
 
-  constructor(public message: string) {}
+  constructor(public message: string) { }
 
   public toString() {
-    return `${this.name}: ${this.message}`
+    return `${this.name}: ${this.message}`;
   }
 }
