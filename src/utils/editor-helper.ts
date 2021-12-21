@@ -21,7 +21,7 @@ export const fileIsSaved = (): boolean => {
 };
 
 export const getCurrentFilePath = (): string | null => {
-  if (!(fileIsOpened && fileIsSaved)) {
+  if (!(fileIsOpened() && fileIsSaved())) {
     return null;
   };
 

@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.0 (2021-12-21)
+
+- Ignore `.g.dart` and `.freezed.dart` files
+- Update dependencies
+
 ## 0.2.1 (2020-12-14)
 
 - Code cleanup and activation fix

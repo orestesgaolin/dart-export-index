@@ -14,7 +14,6 @@ import {
   listFiles,
 } from '../utils/file-manager';
 
-const isDart = /\.dart?$/g;
 const exportFileName = 'index.dart';
 
 export const addCurrentFileToIndexDart = () => {
@@ -25,7 +24,7 @@ export const addCurrentFileToIndexDart = () => {
       throw new ApplicationError('Could not get current file path');
     }
 
-    if (!filePath.match(isDart)) {
+    if (!filePath.endsWith('.dart')) {
       throw new ApplicationError('The file is not Dart file.');
     }
 
@@ -57,7 +56,7 @@ export const addCurrentFileToIndexDartDirName = () => {
       throw new ApplicationError('Could not get current file path');
     }
 
-    if (!filePath.match(isDart)) {
+    if (!filePath.endsWith('.dart')) {
       throw new ApplicationError('The file is not Dart file.');
     }
 
@@ -167,7 +166,11 @@ const getCurrentDirectoryDartFiles = (): string[] => {
   const dirPath = path.dirname(filePath);
 
   const files = listFiles(dirPath);
-  const dartFiles = files.filter((f) => f.match(isDart));
+  const dartFiles = files.filter((f) => {
+    const isDart = f.endsWith('.dart');
+    const isGenerated = f.endsWith('.g.dart') || f.endsWith('.freezed.dart');
+    return isDart && !isGenerated;
+  });
   return dartFiles;
 };
 
