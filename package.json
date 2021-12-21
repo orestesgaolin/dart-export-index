@@ -1,13 +1,13 @@
 {
 	"name": "dart-export-index",
-	"displayName": "Dart export file generator",
-	"description": "Create index.dart that exports the files in current directory. This allows for importing whole folders in batch instead of importing each file one by one",
+	"displayName": "Dart Barrel Export File Generator",
+	"description": "Create barrel file that exports the files in current directory. This allows for importing whole folders in batch instead of importing each file one by one. Creates index.dart and dir_name.dart.",
 	"icon": "screenshots/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/orestesgaolin/dart-export-index"
 	},
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"publisher": "orestesgaolin",
 	"engines": {
 		"vscode": "^1.12.0"

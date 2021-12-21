@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.1 (2021-12-21)
+
+- Update Name
+
 ## 0.3.0 (2021-12-21)
 
 - Ignore `.g.dart` and `.freezed.dart` files
