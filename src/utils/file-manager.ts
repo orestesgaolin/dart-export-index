@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import { ApplicationError } from './errors';
 
+export const isDirectory = (path: string): boolean => {
+  return fs.lstatSync(path).isDirectory();
+};
+
 export const fileExists = (filePath: string): boolean => {
   return fs.existsSync(filePath);
 };

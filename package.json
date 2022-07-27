@@ -19,7 +19,9 @@
 		"onCommand:extension.addCurrentFileToIndexDart",
 		"onCommand:extension.addCurrentFileToIndexDartDirName",
 		"onCommand:extension.exportDartFilesInCurrentDirectory",
-		"onCommand:extension.exportDartFilesInCurrentDirectoryDirName"
+    "onCommand:extension.exportDartFilesInCurrentDirectoryDirName",
+    "onCommand:extension.exportDartFilesFromSubdirectoriesInCurrentDirectory",
+    "onCommand:extension.exportDartFilesFromSubdirectoriesInCurrentDirectoryDirName"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -39,6 +41,14 @@
 			{
 				"command": "extension.exportDartFilesInCurrentDirectoryDirName",
 				"title": "Export Dart files in current directory to dir_name.dart"
+      },
+      {
+        "command": "extension.exportDartFilesFromSubdirectoriesInCurrentDirectory",
+        "title": "Export all Dart files in current directory and below to index.dart"
+      },
+      {
+        "command": "extension.exportDartFilesFromSubdirectoriesInCurrentDirectoryDirName",
+        "title": "Export all Dart files in current directory and below to dir_name.dart"
 			}
 		]
 	},

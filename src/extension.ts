@@ -30,10 +30,26 @@ export function activate(context: vscode.ExtensionContext) {
     },
   );
 
+  const exportAllFilesBelow = vscode.commands.registerCommand(
+    'extension.exportDartFilesFromSubdirectoriesInCurrentDirectory',
+    () => {
+      commands.exportAllFilesBelowToIndexDart();
+    },
+  );
+
+  const exportAllFilesBelowDirName = vscode.commands.registerCommand(
+    'extension.exportDartFilesFromSubdirectoriesInCurrentDirectoryDirName',
+    () => {
+      commands.exportAllFilesBelowToDirNameDart();
+    },
+  );
+
   context.subscriptions.push(addCurrentFile);
   context.subscriptions.push(addCurrentFileDirName);
   context.subscriptions.push(exportAllFiles);
   context.subscriptions.push(exportAllFilesDirName);
+  context.subscriptions.push(exportAllFilesBelow);
+  context.subscriptions.push(exportAllFilesBelowDirName);
 }
 
 export function deactivate() { }
