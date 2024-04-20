@@ -100,9 +100,13 @@ async function exportDartFilesFromDirectory(directory: string, config: vscode.Wo
     // Recursively handle subdirectories and add their exports to the current index
     for (const subdirectory of directories) {
       const basename = path.basename(subdirectory);
-      const subExportFileName = basename + '.dart';
+      const subExportFilePath = getExportFilePathFromDirectory(subdirectory, exportFileNameConfig);
       await exportDartFilesFromDirectory(subdirectory, config); // Recurse into subdirectory
-      const exportationLine = `export '${basename}/${subExportFileName}';`;
+
+      // export dir_name/dir_name.dart or any other file name
+      // can be taken from 2 last parts of exportFilePath 
+      const subExportFileName = subExportFilePath.split('/').slice(-2).join('/');
+      const exportationLine = `export '${subExportFileName}';`;
       writeLineAndSort(exportFilePath, exportationLine);
     }
   }
@@ -131,8 +135,7 @@ const getExportFilePathFromDirectory = (directory: string, exportFileName: strin
     return path.join(directory, `${directoryName}.dart`);
   }
 
-  const dirPath = path.dirname(directory);
-  return path.join(dirPath, `${exportFileName}`);
+  return path.join(directory, `${exportFileName}`);
 };
 
 const getExportationLine = (filePath: string): string => {
