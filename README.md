@@ -6,16 +6,22 @@
 
 ![Usage](./screenshots/usage.png)
 
-This extension adds following commands:
+This extension includes following commands:
 
-- Export Dart files in current directory to index.dart
-  - will create `index.dart` file exporting all the Dart files in the current directory
-- Export Dart files in current directory to dir_name.dart
-  - will create `current_dir_name.dart` file exporting all the Dart files in the current directory e.g. `widgets.dart` if run within _widgets_ directory
-- Export (add) current Dart file to `index.dart`
-  - will add current file to index.dart in the current directory
-- Export (add) current Dart file to `dir_name.dart`
-  - will add current file to `current_dir_name.dart` in the current directory
+- _Export Dart files in current directory export file_
+  - export file name configurable in settings
+  - can be run recursively
+  - will create `export_file_name.dart` file exporting all the Dart files in the current directory e.g. `widgets.dart` if run within _widgets_ directory
+- _Export (add) current Dart file to export file_ (export file name configurable in settings)
+  - will add current file to `export_file_name.dart` in the current directory
+
+## Extension Settings
+
+This extension contributes the following settings:
+
+- `dartBarrelExportFileGenerator.exportFileName`: export file name (default: `dir_name.dart`)
+- `dartBarrelExportFileGenerator.recursiveExport`: iterate through directories recursively to create global export file (default: `false`)
+- `dartBarrelExportFileGenerator.ignorePatterns`: ignore files (glob patterns)
 
 ## Source
 

@@ -7,66 +7,88 @@
 		"type": "git",
 		"url": "https://github.com/orestesgaolin/dart-export-index"
 	},
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"publisher": "orestesgaolin",
 	"engines": {
-		"vscode": "^1.12.0"
+		"vscode": "^1.88.0"
 	},
 	"categories": [
 		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.addCurrentFileToIndexDart",
-		"onCommand:extension.addCurrentFileToIndexDartDirName",
-		"onCommand:extension.exportDartFilesInCurrentDirectory",
-		"onCommand:extension.exportDartFilesInCurrentDirectoryDirName"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "extension.addCurrentFileToIndexDart",
-				"title": "Export (add) current Dart file to index.dart"
+				"title": "Export (add) current Dart file to index.dart (deprecated)"
 			},
 			{
 				"command": "extension.addCurrentFileToIndexDartDirName",
-				"title": "Export (add) current Dart file to dir_name.dart"
+				"title": "Export (add) current Dart file to export file"
 			},
 			{
 				"command": "extension.exportDartFilesInCurrentDirectory",
-				"title": "Export Dart files in current directory to index.dart"
+				"title": "Export Dart files in current directory to index.dart (deprecated)"
 			},
 			{
 				"command": "extension.exportDartFilesInCurrentDirectoryDirName",
-				"title": "Export Dart files in current directory to dir_name.dart"
+				"title": "Export Dart files in current directory export file"
 			}
-		]
+		],
+		"configuration": {
+			"title": "Dart Barrel Export File Generator",
+			"properties": {
+				"dartBarrelExportFileGenerator.exportFileName": {
+					"type": "string",
+					"default": "dir_name.dart",
+					"markdownDescription": "Name of the file to which exports are written.\n\nLeave empty or `dir_name.dart` to export to default location. Use any other name to export to desired file. Keep the file extension e.g. `.dart` or `.e.dart`. File is overwritten on each command run."
+				},
+				"dartBarrelExportFileGenerator.recursiveExport": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "Enable recursive export of files from subdirectories.\n\nIt will result with a top-most export file that will include files from subdirectories. They will be referenced using their corresponding export files, e.g. `feature.dart` will export `subdirectory/subdirectory.dart` and not individual files from the `subdirectory`."
+				},
+				"dartBarrelExportFileGenerator.ignorePatterns": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"*.g.dart",
+						"*.part.dart",
+						"*.freezed.dart"
+					],
+					"markdownDescription": "Glob patterns for files and directories to ignore during export.\n\nPatterns are matched against relative paths from the current working directory. Paths are not matched against file in subdirectories so `/**/` may not work."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
-		"compile": "webpack --config ./build/node-extension.webpack.config.js",
-		"watch": "webpack --watch --config ./build/node-extension.webpack.config.js",
-		"package": "webpack --mode production --devtool hidden-source-map --config ./build/node-extension.webpack.config.js",
-		"test-compile": "tsc -p ./",
-		"test-watch": "tsc -watch -p ./",
-		"pretest": "npm run test-compile && npm run lint",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "vscode-test"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.12.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"eslint": "^7.15.0",
-		"@typescript-eslint/eslint-plugin": "^4.9.0",
-		"@typescript-eslint/parser": "^4.9.0",
-		"glob": "^7.1.6",
-		"mocha": "^8.1.3",
-		"typescript": "^4.1.2",
-		"vscode-test": "^1.4.1",
-		"ts-loader": "^8.0.11",
-		"webpack": "^5.10.0",
-		"webpack-cli": "^4.2.0"
+		"@types/mocha": "^10.0.6",
+		"@types/node": "18.x",
+		"@types/vscode": "^1.88.0",
+		"@typescript-eslint/eslint-plugin": "^7.4.0",
+		"@typescript-eslint/parser": "^7.4.0",
+		"@vscode/test-cli": "^0.0.8",
+		"@vscode/test-electron": "^2.3.9",
+		"eslint": "^8.57.0",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.3.3",
+		"webpack": "^5.91.0",
+		"webpack-cli": "^5.1.4"
+	},
+	"dependencies": {
+		"glob": "^10.3.12"
 	}
 }

@@ -9,14 +9,13 @@ import { ApplicationError } from '../utils/errors';
 import {
   createFileIfNotExists,
   clearFile,
-  getLines,
-  writeFile,
-  listFiles,
+  getDartFilesAndDirectories,
+  getDirectoryNameFromDirectory,
+  writeLineAndSort,
 } from '../utils/file-manager';
 
-const exportFileName = 'index.dart';
 
-export const addCurrentFileToIndexDart = () => {
+export const addCurrentFileToDartExportFile = () => {
   try {
     const filePath = getFilePath();
 
@@ -28,77 +27,20 @@ export const addCurrentFileToIndexDart = () => {
       throw new ApplicationError('The file is not Dart file.');
     }
 
-    const indexFilePath = getIndexPath(filePath);
+    const config = vscode.workspace.getConfiguration('dartBarrelExportFileGenerator');
+    const exportFileName = config.get<string>('exportFileName');
 
-    if (filePath === indexFilePath) {
+    const directory = path.dirname(filePath);
+    const exportFilePath = getExportFilePathFromDirectory(directory, exportFileName);
+
+    if (filePath === exportFilePath) {
       throw new ApplicationError('The file is the index file itself.');
     }
 
-    createFileIfNotExists(indexFilePath);
+    createFileIfNotExists(exportFilePath);
 
     const exportationLine = getExportationLine(filePath);
-    writeLineAndSort(indexFilePath, exportationLine);
-  } catch (err) {
-    if (err instanceof ApplicationError) {
-      vscode.window.showErrorMessage(err.message);
-      return;
-    }
-
-    throw err;
-  }
-};
-
-export const addCurrentFileToIndexDartDirName = () => {
-  try {
-    const filePath = getFilePath();
-
-    if (filePath === null) {
-      throw new ApplicationError('Could not get current file path');
-    }
-
-    if (!filePath.endsWith('.dart')) {
-      throw new ApplicationError('The file is not Dart file.');
-    }
-
-    const indexFilePath = getDirNamePath(filePath);
-
-    if (filePath === indexFilePath) {
-      throw new ApplicationError('The file is the index file itself.');
-    }
-
-    createFileIfNotExists(indexFilePath);
-
-    const exportationLine = getExportationLine(filePath);
-    writeLineAndSort(indexFilePath, exportationLine);
-  } catch (err) {
-    if (err instanceof ApplicationError) {
-      vscode.window.showErrorMessage(err.message);
-      return;
-    }
-
-    throw err;
-  }
-};
-
-export const exportDartFilesInCurrentDirectory = () => {
-  try {
-    const files = getCurrentDirectoryDartFiles();
-    const filePath = getFilePath();
-    if (filePath === null) {
-      throw new ApplicationError('Could not get current file path');
-    }
-    const indexFilePath = getIndexPath(filePath);
-    createFileIfNotExists(indexFilePath);
-    clearFile(indexFilePath);
-
-    files.forEach((f) => {
-      if (f === exportFileName) {
-        return;
-      }
-      const exportationLine = getExportationLine(f);
-      writeLineAndSort(indexFilePath, exportationLine);
-    });
-
+    writeLineAndSort(exportFilePath, exportationLine);
   } catch (err) {
     if (err instanceof ApplicationError) {
       vscode.window.showErrorMessage(err.message);
@@ -111,22 +53,15 @@ export const exportDartFilesInCurrentDirectory = () => {
 
 export const exportDartFilesInCurrentDirectoryDirName = () => {
   try {
-    const files = getCurrentDirectoryDartFiles();
+    const config = vscode.workspace.getConfiguration('dartBarrelExportFileGenerator');
+
     const filePath = getFilePath();
     if (filePath === null) {
       throw new ApplicationError('Could not get current file path');
     }
-    const indexFilePath = getDirNamePath(filePath);
-    createFileIfNotExists(indexFilePath);
-    clearFile(indexFilePath);
-
-    files.forEach((f) => {
-      if (f === exportFileName || f === path.basename(indexFilePath)) {
-        return;
-      }
-      const exportationLine = getExportationLine(f);
-      writeLineAndSort(indexFilePath, exportationLine);
-    });
+    console.log(`filePath: ${filePath}`);
+    const directory = path.dirname(filePath);
+    exportDartFilesFromDirectory(directory, config);
 
   } catch (err) {
     if (err instanceof ApplicationError) {
@@ -138,68 +73,69 @@ export const exportDartFilesInCurrentDirectoryDirName = () => {
   }
 };
 
+async function exportDartFilesFromDirectory(directory: string, config: vscode.WorkspaceConfiguration) {
+  const exportFileNameConfig = config.get<string>('exportFileName') || 'dir_name.dart';
+  const ignorePatterns = config.get<string[]>('ignorePatterns') || [];
+  const recursiveExport = config.get<boolean>('recursiveExport') || false;
+
+  console.log(`exportFileName: ${exportFileNameConfig}`);
+  console.log(`ignorePatterns: ${ignorePatterns}`);
+  console.log(`recursiveExport: ${recursiveExport}`);
+
+  // Define the index file path for the current directory
+  const exportFilePath = getExportFilePathFromDirectory(directory, exportFileNameConfig);
+  createFileIfNotExists(exportFilePath);
+  clearFile(exportFilePath);
+
+  // Get all Dart files and directories except the index file itself
+  const { dartFiles, directories } = getDartFilesAndDirectories(directory, ignorePatterns, exportFilePath);
+
+  // Write export lines for Dart files in the current directory
+  dartFiles.forEach(file => {
+    const exportationLine = getExportationLine(file);
+    writeLineAndSort(exportFilePath, exportationLine);
+  });
+
+  if (recursiveExport) {
+    // Recursively handle subdirectories and add their exports to the current index
+    for (const subdirectory of directories) {
+      const basename = path.basename(subdirectory);
+      const subExportFileName = basename + '.dart';
+      await exportDartFilesFromDirectory(subdirectory, config); // Recurse into subdirectory
+      const exportationLine = `export '${basename}/${subExportFileName}';`;
+      writeLineAndSort(exportFilePath, exportationLine);
+    }
+  }
+}
+
 const getFilePath = (): string | null => {
   if (!fileIsOpened()) {
-    throw new ApplicationError('No file is opened.');
+    throw new ApplicationError('No file is opened. Make sure to execute this command in a Dart file.');
   }
 
   if (!fileIsSaved()) {
-    throw new ApplicationError('The file is not saved yet.');
+    throw new ApplicationError('The file is not saved yet. Save the file before executing this command.');
   }
 
   return getCurrentFilePath();
 };
 
-const getCurrentDirectoryDartFiles = (): string[] => {
-  if (!fileIsOpened()) {
-    throw new ApplicationError('No file is opened.');
+const getExportFilePathFromDirectory = (directory: string, exportFileName: string | undefined): string => {
+  let shouldUseDirectoryName = exportFileName === undefined
+    || exportFileName === ''
+    || exportFileName === null
+    || exportFileName === 'dir_name.dart';
+
+  if (shouldUseDirectoryName) {
+    const directoryName = getDirectoryNameFromDirectory(directory);
+    return path.join(directory, `${directoryName}.dart`);
   }
 
-  if (!fileIsSaved()) {
-    throw new ApplicationError('The file is not saved yet.');
-  }
-
-  const filePath = getCurrentFilePath();
-  if (filePath === null) {
-    throw new ApplicationError('Could not get current file path');
-  }
-  const dirPath = path.dirname(filePath);
-
-  const files = listFiles(dirPath);
-  const dartFiles = files.filter((f) => {
-    const isDart = f.endsWith('.dart');
-    const isGenerated = f.endsWith('.g.dart') || f.endsWith('.freezed.dart');
-    return isDart && !isGenerated;
-  });
-  return dartFiles;
-};
-
-const getIndexPath = (filePath: string): string => {
-  const dirPath = path.dirname(filePath);
+  const dirPath = path.dirname(directory);
   return path.join(dirPath, `${exportFileName}`);
-};
-
-const getDirNamePath = (filePath: string): string => {
-  const dirPath = path.dirname(filePath);
-  const elements = dirPath.split('/');
-  const dirName = elements[elements.length - 1];
-  return path.join(dirPath, `${dirName}.dart`);
 };
 
 const getExportationLine = (filePath: string): string => {
   const fileName = path.basename(filePath);
   return `export '${fileName}';`;
-};
-
-const writeLineAndSort = (filePath: string, line: string): void => {
-  const lines = getLines(filePath).filter(l => l !== '');
-
-  if (!lines.includes(line)) {
-    lines.push(line);
-  }
-
-  lines.sort();
-  const written = `${lines.join('\n')}\n`;
-
-  writeFile(filePath, written);
 };

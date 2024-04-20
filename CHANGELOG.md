@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.4.0 (2024-04-20)
+
+- deprecate commands that export the files to index.dart in favor of the extension settings
+- add extension settings for:
+  - export file name (default: dir_name.dart)
+  - recursive export option (iterate through directories recursively to create global export file)
+  - ignore patterns for files (glob patterns)
+- update extension's dependencies
+
 ## 0.3.1 (2021-12-21)
 
 - Update Name
