@@ -17,6 +17,8 @@ This extension includes following commands:
 
 ## Extension Settings
 
+![Usage](./screenshots/settings.png)
+
 This extension contributes the following settings:
 
 - `dartBarrelExportFileGenerator.exportFileName`: export file name (default: `dir_name.dart`)
