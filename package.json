@@ -7,7 +7,7 @@
 		"type": "git",
 		"url": "https://github.com/orestesgaolin/dart-export-index"
 	},
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"publisher": "orestesgaolin",
 	"engines": {
 		"vscode": "^1.88.0"

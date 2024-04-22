@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.4.1 (2024-04-22)
+
+**Refactor**
+
+- show update notification only once
+
 ## 0.4.0 (2024-04-20)
 
 - deprecate commands that export the files to index.dart in favor of the extension settings
