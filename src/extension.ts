@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import * as commands from './commands';
 
+const extensionId = 'orestesgaolin.dart-export-index';
+
 export function activate(context: vscode.ExtensionContext) {
   const showInfoNotification = vscode.commands.registerCommand('extension.showInfo', async () => {
     const selection = await vscode.window.showInformationMessage('Extension has been updated. Recursive export and ignore patters are now available. Check the extension settings for details.', 'Open settings');
@@ -28,7 +30,15 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(exportAllFilesDirName);
   context.subscriptions.push(showInfoNotification);
   // show notification on start
-  vscode.commands.executeCommand('extension.showInfo');
+
+  const previousVersion = context.globalState.get<string>(extensionId);
+  const currentVersion = vscode.extensions.getExtension(extensionId)!.packageJSON.version;
+  // store latest version
+  context.globalState.update(extensionId, currentVersion);
+
+  if (previousVersion === undefined) {
+    vscode.commands.executeCommand('extension.showInfo');
+  }
 }
 
 export function deactivate() { }
